@@ -112,7 +112,7 @@ CONFIG_FALLBACK_FILE    = "paraview_config.json"
 FACE_FILTER_MODE = 'remove'
 
 # Face numbers: matched against patch names ending in that integer (e.g. 298 matches 'patch/face298').
-FACE_NUMBERS     = [1, 2, 3, 4, 5, 6]
+FACE_NUMBERS     = [298, 299, 300, 301, 302, 303]
 
 # ---- Coordinate Convention -------------------------------------------------
 # +X : Front (nose cone)
@@ -1564,6 +1564,10 @@ if air_merge is not None:
         lut = GetColorTransferFunction(field_name)
         lut.ApplyPreset(COLOR_PRESET, True)
         lut.AutomaticRescaleRangeMode = 'Never'
+        try:
+            lut.LockDataRange = 1
+        except Exception:
+            pass
         lut.RescaleTransferFunction(f_range[0], f_range[1])
         GetOpacityTransferFunction(field_name).RescaleTransferFunction(f_range[0], f_range[1])
 
@@ -1608,6 +1612,16 @@ if air_merge is not None:
                         pass
             except Exception:
                 pass
+
+            # Re-lock color range after Surface LIC switch (ParaView resets it on representation change)
+            lut.AutomaticRescaleRangeMode = 'Never'
+            try:
+                lut.LockDataRange = 1
+            except Exception:
+                pass
+            lut.RescaleTransferFunction(f_range[0], f_range[1])
+            GetOpacityTransferFunction(field_name).RescaleTransferFunction(f_range[0], f_range[1])
+            y_sdisp.SetScalarBarVisibility(view, True)
 
             path_lic = os.path.join(out_dir, f"{f_prefix}_y_{y_pos:.3f}_streamlines.png")
             shot(path_lic, view)
@@ -1672,6 +1686,10 @@ if air_merge is not None:
         lut = GetColorTransferFunction(field_name)
         lut.ApplyPreset(COLOR_PRESET, True)
         lut.AutomaticRescaleRangeMode = 'Never'
+        try:
+            lut.LockDataRange = 1
+        except Exception:
+            pass
         lut.RescaleTransferFunction(f_range[0], f_range[1])
         GetOpacityTransferFunction(field_name).RescaleTransferFunction(f_range[0], f_range[1])
 
@@ -1716,6 +1734,16 @@ if air_merge is not None:
                         pass
             except Exception:
                 pass
+
+            # Re-lock color range after Surface LIC switch (ParaView resets it on representation change)
+            lut.AutomaticRescaleRangeMode = 'Never'
+            try:
+                lut.LockDataRange = 1
+            except Exception:
+                pass
+            lut.RescaleTransferFunction(f_range[0], f_range[1])
+            GetOpacityTransferFunction(field_name).RescaleTransferFunction(f_range[0], f_range[1])
+            z_sdisp.SetScalarBarVisibility(view, True)
 
             path_lic = os.path.join(out_dir, f"{f_prefix}_z_{z_pos:.3f}_streamlines.png")
             shot(path_lic, view)
