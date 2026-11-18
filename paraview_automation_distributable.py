@@ -1590,6 +1590,15 @@ if air_merge is not None:
             # 1. Standard slice view (without streamlines)
             y_sdisp.SetRepresentationType('Surface')
             ColorBy(y_sdisp, ('POINTS', field_name, 'Magnitude' if field_name == 'U' else ''))
+            # ColorBy/representation changes can restore the data-driven LUT range.
+            # Reapply the fixed field range before rendering each clean slice.
+            lut.AutomaticRescaleRangeMode = 'Never'
+            try:
+                lut.LockDataRange = 1
+            except Exception:
+                pass
+            lut.RescaleTransferFunction(f_range[0], f_range[1])
+            GetOpacityTransferFunction(field_name).RescaleTransferFunction(f_range[0], f_range[1])
             y_sdisp.SetScalarBarVisibility(view, True)
             path_std = os.path.join(out_dir, f"{f_prefix}_y_{y_pos:.3f}.png")
             shot(path_std, view)
@@ -1712,6 +1721,15 @@ if air_merge is not None:
             # 1. Standard slice view (without streamlines)
             z_sdisp.SetRepresentationType('Surface')
             ColorBy(z_sdisp, ('POINTS', field_name, 'Magnitude' if field_name == 'U' else ''))
+            # ColorBy/representation changes can restore the data-driven LUT range.
+            # Reapply the fixed field range before rendering each clean slice.
+            lut.AutomaticRescaleRangeMode = 'Never'
+            try:
+                lut.LockDataRange = 1
+            except Exception:
+                pass
+            lut.RescaleTransferFunction(f_range[0], f_range[1])
+            GetOpacityTransferFunction(field_name).RescaleTransferFunction(f_range[0], f_range[1])
             z_sdisp.SetScalarBarVisibility(view, True)
             path_std = os.path.join(out_dir, f"{f_prefix}_z_{z_pos:.3f}.png")
             shot(path_std, view)
